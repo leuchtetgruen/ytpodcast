@@ -1,0 +1,7 @@
+api_key: YOUTUBE-API-KEY
+base_url: "http://example.com/"
+channels:
+  - url: https://www.youtube.com/channel/channel_id
+    keep: 5
+    audio_only: true
+    
