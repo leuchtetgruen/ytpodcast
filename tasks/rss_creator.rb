@@ -10,6 +10,8 @@ class RSSCreator
     rss = RSS::Maker.make("2.0") do |maker|
       rssChannel = make_channel(maker)
 
+      make_image(maker)
+
       @channel.videos.each do |vid|
         item = make_item(vid, maker)
       end
@@ -20,6 +22,12 @@ class RSSCreator
   end
 
   private
+  def make_image(maker)
+    maker.image.title = maker.channel.title
+    maker.image.url = @channel.thumbnail_url
+    maker.image.description = maker.channel.description
+  end
+
   def make_channel(maker)
     maker.channel.title = @channel.title
     maker.channel.description = @channel.description
@@ -28,7 +36,6 @@ class RSSCreator
     maker.channel.author = @channel.author
     maker.channel.id = @channel.url
 
-    maker.channel.logo = @channel.thumbnail_url
   end
 
   def make_item(video, maker)
@@ -44,6 +51,7 @@ class RSSCreator
       item.enclosure.length = File.size(video.output_filename)
       #TODO video type
       item.enclosure.type = "audio/mpeg4"
+
 
       #item.guid.isPermaLink = true
       #item.guid.content = link
