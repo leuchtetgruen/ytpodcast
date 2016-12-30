@@ -28,10 +28,7 @@ class RSSCreator
     maker.channel.author = @channel.author
     maker.channel.id = @channel.url
 
-    #maker.channel.image = RSS:Rss::Channel::Image.new
-    #maker.channel.image.url = @channel.preview_url
-    #maker.channel.image.title = channel.title
-    #maker.channel.image.link = channel.link
+    maker.channel.logo = @channel.thumbnail_url
   end
 
   def make_item(video, maker)
