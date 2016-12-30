@@ -14,11 +14,13 @@ class VideoDownloader
     #TODO adjust quality according to settings
     cmd = "youtube-dl "
     cmd += if @video.shouldOnlyKeepAudio?
-             "--extract-audio --audio-format #{@video.extension} "
+             "-f 140 "
            end
 
     cmd += "--output #{@video.output_filename} " 
     cmd += @video.url
+
+    p cmd
 
     cmd
   end

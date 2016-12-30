@@ -45,7 +45,8 @@ class RSSCreator
 
       item.enclosure.url = item.link
       item.enclosure.length = File.size(video.output_filename)
-      item.enclosure.type = "audio/mp4"
+      #TODO video type
+      item.enclosure.type = "audio/mpeg4"
 
       #item.guid.isPermaLink = true
       #item.guid.content = link

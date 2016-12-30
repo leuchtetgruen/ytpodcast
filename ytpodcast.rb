@@ -1,5 +1,6 @@
 require 'yt'
 require 'yaml'
+require 'byebug'
 
 $: << "."
 require 'models/video.rb'
