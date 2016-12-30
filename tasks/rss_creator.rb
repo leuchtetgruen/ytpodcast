@@ -44,6 +44,7 @@ class RSSCreator
     maker.items.new_item do |item|
       item.title = video.title
       item.link = link
+      item.summary = video.description
       item.description = video.description
       item.updated = video.published_at
 
