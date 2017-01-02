@@ -5,3 +5,7 @@ channels:
     keep: 5
     audio_only: true
     
+playlists:
+  - url: https://www.youtube.com/playlist?list=playlist_id
+    keep: 5
+    audio_only: true
