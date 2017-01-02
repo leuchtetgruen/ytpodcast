@@ -13,9 +13,11 @@ class VideoDownloader
   def build_command
     #TODO adjust quality according to settings
     cmd = "youtube-dl "
-    cmd += if @video.shouldOnlyKeepAudio?
-             "-f 140 "
-           end
+    if @video.shouldOnlyKeepAudio?
+      cmd += "-f 140 "
+    else
+      cmd += "-f 22 "
+    end
 
     cmd += "--output #{@video.output_filename} " 
     cmd += @video.url

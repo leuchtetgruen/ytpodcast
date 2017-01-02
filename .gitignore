@@ -13,6 +13,7 @@
 config.yml
 data/*
 cache.json
+Gemfile.lock
 
 .DS_STORE
 .byebug_history
