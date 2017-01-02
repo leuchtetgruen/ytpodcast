@@ -18,12 +18,18 @@ baseURL = hash['base_url']
 
 Yt.configuration.api_key = hash['api_key']
 
-channels = hash['channels'].map do |channel_hash|
-  Channel.new(channel_hash)
+channels = []
+if hash['channels']
+  channels = hash['channels'].map do |channel_hash|
+    Channel.new(channel_hash)
+  end
 end
 
-playlists = hash['playlists'].map do |playlist_hash|
-  Playlist.new(playlist_hash)
+playlists = []
+if hash['playlists']
+  playlists = hash['playlists'].map do |playlist_hash|
+    Playlist.new(playlist_hash)
+  end
 end
 
 videoCollections = (channels | playlists)
