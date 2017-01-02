@@ -1,9 +1,9 @@
 require 'rss'
 
 class RSSCreator
-  def initialize(channel, baseURL)
-    @channel = channel
-    @baseURL = baseURL
+  def initialize(videoCollection, baseURL)
+    @videoCollection = videoCollection
+    @baseURL         = baseURL
   end
 
   def run!
@@ -12,7 +12,7 @@ class RSSCreator
 
       make_image(maker)
 
-      @channel.videos.each do |vid|
+      @videoCollection.videos.each do |vid|
         item = make_item(vid, maker)
       end
 
@@ -24,22 +24,27 @@ class RSSCreator
   private
   def make_image(maker)
     maker.image.title = maker.channel.title
-    maker.image.url = @channel.thumbnail_url
+    maker.image.url = @videoCollection.thumbnail_url
     maker.image.description = maker.channel.description
   end
 
   def make_channel(maker)
-    maker.channel.title = @channel.title
-    maker.channel.description = @channel.description
-    maker.channel.link = @channel.url
+    maker.channel.title = @videoCollection.title
+    maker.channel.description = @videoCollection.description
+    maker.channel.link = @videoCollection.url
     maker.channel.updated = Time.now.to_s
-    maker.channel.author = @channel.author
-    maker.channel.id = @channel.url
-
+    maker.channel.author = @videoCollection.author
+    maker.channel.id = @videoCollection.url
   end
 
   def make_item(video, maker)
     link = build_public_filename(video)
+    filename = video.output_filename
+
+    unless File.exist?(filename)
+      # If the file does not exist dont try to put it in the RSS
+      return
+    end
 
     maker.items.new_item do |item|
       item.title = video.title
@@ -49,17 +54,15 @@ class RSSCreator
       item.updated = video.published_at
 
       item.enclosure.url = item.link
-      item.enclosure.length = File.size(video.output_filename)
+      item.enclosure.length = File.size(filename)
       item.enclosure.type = if video.shouldOnlyKeepAudio?
                               "audio/mpeg4"
                             else
                               "video/mp4"
                             end
 
-
       #item.guid.isPermaLink = true
       #item.guid.content = link
-
     end
   end
 
@@ -67,7 +70,8 @@ class RSSCreator
     "#{@baseURL}/#{video.relative_public_url}"
   end
 
+
   def write_rss(rss)
-    File.write("#{@channel.target_dir}/feed.rss", rss.to_s)
+    File.write("#{@videoCollection.target_dir}/feed.rss", rss.to_s)
   end
 end

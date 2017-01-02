@@ -7,6 +7,10 @@ class VideoDownloader
     mk_target_dir
     cmd = build_command
     system(cmd)
+
+    if $?.exitstatus != 0
+      raise "YoutubeDL exited with error"
+    end
   end
 
   private

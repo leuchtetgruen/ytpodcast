@@ -4,7 +4,9 @@ require 'byebug'
 
 $: << "."
 require 'models/video.rb'
+require 'models/video_collection.rb'
 require 'models/channel.rb'
+require 'models/playlist.rb'
 require 'models/cache.rb'
 
 require 'tasks/video_downloader.rb'
@@ -20,28 +22,44 @@ channels = hash['channels'].map do |channel_hash|
   Channel.new(channel_hash)
 end
 
-channels.each do |channel|
-  puts "Processing channel #{channel.title}..."
-  vids = channel.videos.select do |vid|
-    !cache.has?(vid.id)
+playlists = hash['playlists'].map do |playlist_hash|
+  Playlist.new(playlist_hash)
+end
+
+videoCollections = (channels | playlists)
+
+
+#TODO adjust to also playlists
+videoCollections.each do |videoCollection|
+  if videoCollection.is_a?(Channel)
+    puts "Processing channel #{videoCollection.title}..."
+  else
+    puts "Processing playlist #{videoCollection.title}..."
+  end
+
+  vids = videoCollection.videos.select do |vid|
+    !cache.has?(vid)
   end
 
   puts " * #{vids.size} new videos"
   vids.each do |vid|
     puts "   Downloading #{vid.title}..."
     
-    vdl = VideoDownloader.new(vid)
-    vdl.run!
+    begin
+      vdl = VideoDownloader.new(vid)
+      vdl.run!
 
-    cache[vid.id] = vid.output_filename
-    cache.save
+      cache.add_video_filename(vid)
+      cache.save
+    rescue
+      puts "   E: Could not download"
+    end
   end
 
   puts " * Writing RSS..."
 
-  rssCreator = RSSCreator.new(channel, baseURL)
+  rssCreator = RSSCreator.new(videoCollection, baseURL)
   rssCreator.run!
 
   puts ""
 end
-#byebug

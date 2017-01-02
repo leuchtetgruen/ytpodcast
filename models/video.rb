@@ -5,9 +5,9 @@ class Video
   QUALITY_MQ = 2
   QUALITY_LQ = 3
   
-  def initialize(ytVideo, channel)
-    @ytVideo = ytVideo
-    @channel = channel
+  def initialize(ytVideo, videoCollection)
+    @ytVideo         = ytVideo
+    @videoCollection = videoCollection
   end
 
   def title
@@ -34,15 +34,15 @@ class Video
   end
 
   def quality
-    @channel.desiredQuality
+    @videoCollection.desiredQuality
   end
 
   def shouldOnlyKeepAudio?
-    @channel.shouldOnlyKeepAudio?
+    @videoCollection.shouldOnlyKeepAudio?
   end
 
-  def channel
-    @channel
+  def videoCollection 
+    @videoCollection
   end
   
   def output_filename
@@ -58,14 +58,18 @@ class Video
   end
 
   def target_dir
-    @channel.target_dir
+    @videoCollection.target_dir
   end
 
   def relative_public_url
-    "#{@channel.relative_public_url}/#{id}.#{extension}"
+    "#{@videoCollection.relative_public_url}/#{id}.#{extension}"
   end
 
   def published_at
     @ytVideo.published_at
+  end
+
+  def videoCollection
+    @videoCollection
   end
 end

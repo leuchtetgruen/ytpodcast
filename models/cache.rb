@@ -21,15 +21,43 @@ class Cache
     File.write(@filename, @hash.to_json)
   end
 
-  def []=(id, filename)
-    @hash[id] = filename
+  def video_filename(video)
+    key = hash_key(video)
+    (@hash[key] or video.output_filename)
   end
 
-  def [](id)
-    @hash[id]
+  def add_video_filename(video)
+    key = hash_key(video)
+    @hash[key] = video.output_filename
   end
 
-  def has?(id)
-    @hash.keys.map(&:to_s).include?(id)
+  def has?(video)
+    key = hash_key(video)
+    @hash.keys.map(&:to_s).include?(key)
+  end
+
+  private
+  def hash_key(video)
+    vc = video.videoCollection
+    
+    key = if vc.is_a?(Playlist)
+            "P-"
+          elsif vc.is_a?(Channel)
+            "C-"
+          else
+            "U-"
+          end
+    
+    key += video.id
+
+    key += if video.shouldOnlyKeepAudio?
+             "-A"
+           else
+             "-V"
+           end
+
+    #TODO consider quality
+
+    key
   end
 end
